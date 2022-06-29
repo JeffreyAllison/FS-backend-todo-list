@@ -15,5 +15,5 @@ CREATE TABLE todos (
   task_name TEXT,
   description VARCHAR NOT NULL,
   bought BOOLEAN NOT NULL DEFAULT(true),
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  FOREIGN KEY (user_id) REFERENCES todo_users(id)
 )
