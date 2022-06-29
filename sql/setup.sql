@@ -13,7 +13,6 @@ CREATE TABLE todos (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id BIGINT,
   task_name TEXT,
-  description VARCHAR NOT NULL,
-  bought BOOLEAN NOT NULL DEFAULT(true),
+  completed BOOLEAN NOT NULL DEFAULT(true),
   FOREIGN KEY (user_id) REFERENCES todo_users(id)
 )
