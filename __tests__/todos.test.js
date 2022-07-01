@@ -73,4 +73,18 @@ describe('todos routes', () => {
       user_id: user.id,
     });
   });
+
+  it('PUT /api/v1/todos/:id should update a todo', async () => {
+    const [agent, user] = await SignUpAndLogin();
+    const todo = await Todo.insert({
+      task_name: 'brush teeth',
+      user_id: user.id,
+      completed: false,
+    });
+    const resp = await agent
+      .put(`/api/v1/todos/${todo.id}`)
+      .send({ completed: true });
+    expect(resp.status).toBe(200);
+    expect(resp.body).toEqual({ ...todo, completed: true });
+  });
 });
