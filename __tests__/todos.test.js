@@ -101,4 +101,18 @@ describe('todos routes', () => {
       .send({ completed: true });
     expect(resp.status).toBe(403);
   });
+
+  it('DELETE /api/v1/todos/:id should delete todos for valid user', async () => {
+    const [agent, user] = await SignUpAndLogin();
+    const todo = await Todo.insert({
+      task_name: 'brush teeth',
+      completed: false,
+      user_id: user.id,
+    });
+    const resp = await agent.delete(`/api/v1/todos/${todo.id}`);
+    expect(resp.status).toBe(200);
+
+    const check = await Todo.getById(todo.id);
+    expect(check).toBeNull();
+  });
 });
