@@ -60,4 +60,17 @@ describe('todos routes', () => {
     const resp = await request(app).get('/api/v1/todos');
     expect(resp.status).toEqual(401);
   });
+
+  it('POST /api/v1/todos creates a new todo for the current user', async () => {
+    const [agent, user] = await SignUpAndLogin();
+    const newTodo = { task_name: 'cook', completed: false };
+    const resp = await agent.post('/api/v1/todos').send(newTodo);
+    expect(resp.status).toEqual(200);
+    expect(resp.body).toEqual({
+      id: expect.any(String),
+      task_name: newTodo.task_name,
+      completed: false,
+      user_id: user.id,
+    });
+  });
 });
