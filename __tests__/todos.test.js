@@ -61,6 +61,11 @@ describe('todos routes', () => {
     expect(resp.status).toEqual(401);
   });
 
+  it('POST /api/v1/todos should return a 401 if not the user is not authenticated', async () => {
+    const resp = await request(app).post('/api/v1/todos');
+    expect(resp.status).toEqual(401);
+  });
+
   it('POST /api/v1/todos creates a new todo for the current user', async () => {
     const [agent, user] = await SignUpAndLogin();
     const newTodo = { task_name: 'cook', completed: false };
@@ -86,6 +91,17 @@ describe('todos routes', () => {
       .send({ completed: true });
     expect(resp.status).toBe(200);
     expect(resp.body).toEqual({ ...todo, completed: true });
+  });
+
+  it('PUT /api/v1/todos/:id should return a 401 if not the user is not authenticated', async () => {
+    const user = await UserService.create(mockUser);
+    const todo = await Todo.insert({
+      task_name: 'brush teeth',
+      completed: false,
+      user_id: user.id,
+    });
+    const resp = await request(app).put(`/api/v1/todos/${todo.user_id}`);
+    expect(resp.status).toEqual(401);
   });
 
   it('PUT /api/v1/todos/:id should 403 for invalid users', async () => {
@@ -126,5 +142,16 @@ describe('todos routes', () => {
     });
     const resp = await agent.delete(`/api/v1/todos/${todo.id}`);
     expect(resp.status).toBe(403);
+  });
+
+  it('DELETE /api/v1/todos/:id should return a 401 if not the user is not authenticated', async () => {
+    const user = await UserService.create(mockUser);
+    const todo = await Todo.insert({
+      task_name: 'brush teeth',
+      completed: false,
+      user_id: user.id,
+    });
+    const resp = await request(app).delete(`/api/v1/todos/${todo.user_id}`);
+    expect(resp.status).toEqual(401);
   });
 });
