@@ -115,4 +115,16 @@ describe('todos routes', () => {
     const check = await Todo.getById(todo.id);
     expect(check).toBeNull();
   });
+
+  it('DELETE /api/v1/todos/:id should 403 for invalid users', async () => {
+    const [agent] = await SignUpAndLogin();
+    const user2 = await UserService.create(mockUser2);
+    const todo = await Todo.insert({
+      task_name: 'go exercise',
+      completed: false,
+      user_id: user2.id,
+    });
+    const resp = await agent.delete(`/api/v1/todos/${todo.id}`);
+    expect(resp.status).toBe(403);
+  });
 });
