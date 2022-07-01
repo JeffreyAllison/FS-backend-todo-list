@@ -87,4 +87,18 @@ describe('todos routes', () => {
     expect(resp.status).toBe(200);
     expect(resp.body).toEqual({ ...todo, completed: true });
   });
+
+  it('PUT /api/v1/todos/:id should 403 for invalid users', async () => {
+    const [agent] = await SignUpAndLogin();
+    const user2 = await UserService.create(mockUser2);
+    const todo = await Todo.insert({
+      task_name: 'go exercise',
+      completed: false,
+      user_id: user2.id,
+    });
+    const resp = await agent
+      .put(`/api/v1/todos/${todo.id}`)
+      .send({ completed: true });
+    expect(resp.status).toBe(403);
+  });
 });
